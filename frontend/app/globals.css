@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Theme: deep ink-teal canvas, white frosted-glass cards ---------- */
+:root { color-scheme: light; }
+/* The gradient lives on <html> so the fixed three.js canvas (z-index -10) paints above it
+   but below page content. A background on <body> would cover the canvas. */
+html {
+  background:
+    radial-gradient(1100px 600px at 8% -8%, rgba(13, 148, 136, 0.55), transparent 60%),
+    radial-gradient(900px 560px at 100% 4%, rgba(109, 78, 214, 0.38), transparent 58%),
+    radial-gradient(900px 600px at 50% 110%, rgba(8, 145, 178, 0.35), transparent 60%),
+    linear-gradient(165deg, #06141c 0%, #0a2633 48%, #071b25 100%);
+  background-color: #06141c;
+  background-attachment: fixed;
+}
+/* Text that sits directly on the dark canvas is light; text inside cards is dark (see below). */
+body { color: #e6f3f1; min-height: 100vh; }
+::selection { background: rgba(94, 234, 212, 0.35); }
+:focus-visible { outline: 2px solid #5eead4; outline-offset: 2px; }
+
+/* ---------- Card surfaces ----------
+   Existing pages use `bg-white` for panels, so it maps to the same white glass:
+   one place controls the look across the whole app. */
+.glass,
+.bg-white {
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  border-color: rgba(255, 255, 255, 0.75);
+  color: #0f2a35;
+  box-shadow:
+    0 14px 40px rgba(4, 36, 48, 0.3),
+    0 2px 6px rgba(4, 36, 48, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+.glass-strong {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(26px) saturate(165%);
+  -webkit-backdrop-filter: blur(26px) saturate(165%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  color: #0f2a35;
+  box-shadow:
+    0 20px 56px rgba(4, 36, 48, 0.38),
+    0 2px 8px rgba(4, 36, 48, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+.bg-slate-50 { background: rgba(13, 148, 136, 0.08); }              /* table header rows, inset blocks */
+.hover\:bg-slate-50:hover { background: rgba(13, 148, 136, 0.12); }
+.hover\:border-brand-600:hover { border-color: #14b8a6; }
+
+/* Text colours outside cards: light-on-dark versions of the slate scale */
+.text-slate-800, .text-slate-700, .text-slate-600 { color: #d7e9e6; }
+.text-slate-500, .text-slate-400 { color: #9cb8b4; }
+.text-brand-600 { color: #5eead4; }
+.text-red-600 { color: #fca5a5; }
+.text-amber-700 { color: #fcd34d; }
+.bg-slate-200.text-slate-700 { color: #1e293b; }
+
+/* Inside cards: dark ink on white glass. :where() keeps specificity low so utility classes
+   with their own colour (buttons, badges: any class containing "bg-") still win. */
+:where(.glass, .glass-strong, .bg-white) * { border-color: rgba(15, 42, 53, 0.12); }
+:where(.glass, .glass-strong, .bg-white) .text-white:not([class*="bg-"]) { color: #0b2530; }
+:where(.glass, .glass-strong, .bg-white) :is(.text-slate-100, .text-slate-200, .text-slate-300) { color: #35505a; }
+:where(.glass, .glass-strong, .bg-white) :is(.text-slate-400, .text-slate-500) { color: #587480; }
+:where(.glass, .glass-strong, .bg-white) :is(.text-slate-600, .text-slate-700, .text-slate-800) { color: #2a4651; }
+:where(.glass, .glass-strong, .bg-white) :is(.text-teal-200, .text-teal-300, .text-brand-600) { color: #0f766e; }
+:where(.glass, .glass-strong, .bg-white) .text-red-600 { color: #dc2626; }
+:where(.glass, .glass-strong, .bg-white) .text-amber-700 { color: #b45309; }
+
+/* A card that carries its own text colour class (e.g. empty-state panels: "bg-white ... text-slate-500")
+   would otherwise get the light, on-dark version of that colour. Pin the dark versions on the card itself. */
+:is(.glass, .glass-strong, .bg-white):is(.text-slate-100, .text-slate-200, .text-slate-300) { color: #35505a; }
+:is(.glass, .glass-strong, .bg-white):is(.text-slate-400, .text-slate-500) { color: #587480; }
+:is(.glass, .glass-strong, .bg-white):is(.text-slate-600, .text-slate-700, .text-slate-800) { color: #2a4651; }
+:is(.glass, .glass-strong, .bg-white):is(.text-brand-600, .text-teal-200, .text-teal-300) { color: #0f766e; }
+:is(.glass, .glass-strong, .bg-white).text-white:not([class*="bg-brand"]) { color: #0b2530; }
+
+/* ---------- Form controls: white fields, dark text, teal focus ---------- */
+input, select, textarea {
+  background: rgba(255, 255, 255, 0.92);
+  color: #0f2a35;
+  border-color: rgba(15, 42, 53, 0.2);
+}
+input.bg-white, select.bg-white, textarea.bg-white {   /* fields reuse `bg-white`; no card chrome on them */
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-color: rgba(15, 42, 53, 0.2);
+}
+input::placeholder, textarea::placeholder { color: #6b8791; }
+select option { background: #ffffff; color: #0f2a35; }
+.focus\:border-brand-600:focus { border-color: #14b8a6; }
+.focus\:ring-brand-100:focus { --tw-ring-color: rgba(20, 184, 166, 0.28); }
+
+/* Primary buttons / active tabs */
+.bg-brand-600 {
+  background-image: linear-gradient(135deg, #0d9488, #0891b2);
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.35);
+}
+.bg-brand-600:hover { filter: brightness(1.08); }
+
+/* Display type */
+.font-display { letter-spacing: -0.02em; }
+.headline {
+  background: linear-gradient(100deg, #ffffff 0%, #b9fbf1 45%, #c9bdfc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* One orchestrated entrance for the hero */
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.hero-in > * { opacity: 0; animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+.hero-in > *:nth-child(2) { animation-delay: 0.12s; }
+.hero-in > *:nth-child(3) { animation-delay: 0.24s; }
+.hero-in > *:nth-child(4) { animation-delay: 0.36s; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-in > * { animation: none; opacity: 1; }
+}
