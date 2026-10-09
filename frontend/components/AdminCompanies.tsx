@@ -30,6 +30,11 @@ export default function AdminCompanies() {
     try { await api(`/api/admin/companies/${id}/status`, { method: "PATCH", json: { status } }); load(); }
     catch (e: any) { setError(e.message); }
   };
+  const remove = async (c: Company) => {
+    if (!window.confirm(`Permanently delete "${c.name}"?\n\nThis removes the company, all its products, its leads and its supplier login. It cannot be undone.`)) return;
+    try { await api(`/api/admin/companies/${c.id}`, { method: "DELETE" }); load(); }
+    catch (e: any) { setError(e.message); }
+  };
   if (loading || !user) return <p className="p-10 text-center text-slate-500">Loading…</p>;
 
   return (
@@ -61,6 +66,7 @@ export default function AdminCompanies() {
                   {c.status !== "APPROVED" && <button onClick={() => setStatus(c.id, "APPROVED")} className="rounded bg-emerald-600 px-3 py-1 text-xs font-semibold text-white">Approve</button>}
                   {c.status === "PENDING" && <button onClick={() => setStatus(c.id, "REJECTED")} className="rounded bg-red-600 px-3 py-1 text-xs font-semibold text-white">Reject</button>}
                   {c.status === "APPROVED" && <button onClick={() => setStatus(c.id, "SUSPENDED")} className="rounded bg-slate-600 px-3 py-1 text-xs font-semibold text-white">Suspend</button>}
+                  <button onClick={() => remove(c)} className="rounded border border-red-300 px-3 py-1 text-xs font-semibold text-red-700 hover:bg-red-50">Delete</button>
                 </td></tr>))}
           </tbody>
         </table>

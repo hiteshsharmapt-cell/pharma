@@ -11,7 +11,7 @@ import sys
 from sqlalchemy import select
 from app.db.base import SessionLocal
 from app.models import (ActiveStatus, Category, Company, CompanyStatus, Location, LocationType, Product,
-                        ProductStatus, Role, User)
+                        ProductStatus, RequirementStatus, Requirement, Lead, Role, User)
 from app.core.security import hash_password
 from app.services.slugs import slugify
 
@@ -366,6 +366,18 @@ TYPE_W = [30, 25, 25, 12, 8]
 
 def clear(db):
     users = db.scalars(select(User).where(User.email.like(f"%@{DOMAIN}"))).all()
+    company_ids = [u.company.id for u in users if u.company]
+    # Leads point at companies without a cascade, so remove the demo companies' leads first.
+    leads = db.scalars(select(Lead).where(Lead.supplier_id.in_(company_ids))).all() if company_ids else []
+    req_ids = {l.requirement_id for l in leads}
+    for l in leads:
+        db.delete(l)
+    db.flush()
+    for rid in req_ids:  # a requirement that lost its only lead goes back to the unassigned queue
+        if not db.scalar(select(Lead.id).where(Lead.requirement_id == rid).limit(1)):
+            r = db.get(Requirement, rid)
+            if r and r.status == RequirementStatus.ASSIGNED:
+                r.status = RequirementStatus.NEW
     for u in users:
         if u.company:
             db.delete(u.company)  # products cascade
@@ -373,7 +385,7 @@ def clear(db):
     for u in users:
         db.delete(u)
     db.commit()
-    print(f"Removed {len(users)} demo suppliers and their companies/products.")
+    print(f"Removed {len(users)} demo suppliers, their companies/products and {len(leads)} lead(s).")
 
 
 def ensure_locations(db):

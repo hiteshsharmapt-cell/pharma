@@ -4,7 +4,8 @@ from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 from app.api.deps import require_admin
 from app.db.base import get_db
-from app.models import Company, CompanyStatus, Location, Product, ProductStatus, User
+from app.models import (Company, CompanyStatus, Lead, Location, Product, ProductStatus, Requirement,
+                        RequirementStatus, Role, User)
 
 router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(require_admin)])
 
@@ -33,6 +34,32 @@ def set_company_status(company_id: int, data: StatusIn, db: Session = Depends(ge
     company.status = data.status
     db.commit()
     return {"id": company.id, "status": company.status.value}
+
+
+@router.delete("/companies/{company_id}")
+def delete_company(company_id: int, db: Session = Depends(get_db)):
+    """Permanently remove a company: its products, its leads and its supplier login. Cannot be undone."""
+    company = db.get(Company, company_id)
+    if not company:
+        raise HTTPException(404, "Company not found")
+    leads = db.scalars(select(Lead).where(Lead.supplier_id == company.id)).all()
+    req_ids = {l.requirement_id for l in leads}
+    for l in leads:
+        db.delete(l)
+    db.flush()
+    for rid in req_ids:  # a requirement left with no leads returns to the unassigned queue
+        if not db.scalar(select(Lead.id).where(Lead.requirement_id == rid).limit(1)):
+            r = db.get(Requirement, rid)
+            if r and r.status == RequirementStatus.ASSIGNED:
+                r.status = RequirementStatus.NEW
+    owner = db.get(User, company.user_id)
+    name = company.name
+    db.delete(company)  # products cascade
+    db.flush()
+    if owner and owner.role == Role.SUPPLIER:  # never touches an admin or buyer account
+        db.delete(owner)
+    db.commit()
+    return {"ok": True, "deleted": name, "leads_removed": len(leads)}
 
 
 class ProductStatusIn(BaseModel):
