@@ -12,9 +12,10 @@ export default function Navbar() {
           <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-cyan-600 text-white">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
           </span>
-          YesPharma
+          PharmaConnect
         </Link>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium">
+          <Link href="/find" className={link}>Find Manufacturers</Link>
           <Link href="/companies" className={link}>Companies</Link>
           <Link href="/products" className={link}>Products</Link>
           {user ? (<>

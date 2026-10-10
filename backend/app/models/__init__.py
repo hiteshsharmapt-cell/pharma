@@ -123,3 +123,9 @@ class Lead(TS, Base):
     converted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     notes: Mapped[str | None] = mapped_column(Text)
     requirement: Mapped[Requirement] = relationship(back_populates="leads")
+
+# Catalogue tables (specialities, dosage forms, product categories, capabilities). Imported last so that
+# Base.metadata.create_all() and any migration tooling see every table.
+from app.models.catalog import (CompanyProductCapability, CompanySpeciality, DosageFormGroup,  # noqa: E402,F401
+                                FormulationType, ProductCategory, Speciality, VerificationStatus,
+                                capability_formulation_types, product_category_specialities)

@@ -3,8 +3,9 @@ import HeroSearch from "@/components/HeroSearch";
 import CompanyCard, { type CompanyCardData } from "@/components/CompanyCard";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-async function get<T>(path: string, fallback: T): Promise<T> {
-  try { const r = await fetch(`${API}${path}`, { next: { revalidate: 60 } }); return r.ok ? ((await r.json()) as T) : fallback; }
+async function get<T>(path: string, fallback: T, fresh = false): Promise<T> {
+  // fresh = never cached, so admin changes to Featured companies show on the very next page load
+  try { const r = await fetch(`${API}${path}`, fresh ? { cache: "no-store" } : { next: { revalidate: 60 } }); return r.ok ? ((await r.json()) as T) : fallback; }
   catch { return fallback; }
 }
 type Cat = { id: number; name: string; slug: string; parent_id: number | null };
@@ -23,7 +24,7 @@ export default async function Home() {
     get<{ items: CompanyCardData[]; total: number }>("/api/companies?page_size=6", { items: [], total: 0 }),
     get<{ total: number }>("/api/products?page_size=1", { total: 0 }),
     get<Loc[]>("/api/locations", []),
-    get<{ items: CompanyCardData[] }>("/api/companies/featured", { items: [] }),
+    get<{ items: CompanyCardData[] }>("/api/companies/featured", { items: [] }, true),
   ]);
   // Admin picks the featured list (Admin > Featured). Until one is chosen, fall back to the latest companies.
   const featuredList = featured.items.length > 0 ? featured.items : companies.items;
@@ -39,6 +40,7 @@ export default async function Home() {
           <HeroSearch />
           <div className="flex flex-wrap gap-3">
             <Link href="/post-requirement" className="bg-brand-600 rounded-full px-7 py-3 font-semibold text-white">Post Your Requirement</Link>
+            <Link href="/find" className="glass rounded-full border px-7 py-3 font-semibold text-teal-800">Find by Speciality / Product</Link>
             <Link href="/companies" className="glass rounded-full border px-7 py-3 font-semibold text-teal-800">Browse Companies</Link>
           </div>
         </div>

@@ -4,14 +4,14 @@ import type { Metadata } from "next";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 type Company = { name: string; slug: string; description: string | null; business_type: string; city: string | null;
-  state: string | null; address: string | null; brochure_url: string | null; categories: string[];
+  state: string | null; address: string | null; brochure_url: string | null; categories: string[]; specialities?: string[]; capabilities?: { category: string; dosage_form_group: string; formulation_types: string[] }[];
   products: { name: string; slug: string; composition: string | null; dosage_form: string | null; pack_size: string | null }[] };
 
 type Result = { company: Company | null; notFound: boolean; error: string | null };
 
 async function load(slug: string): Promise<Result> {
   try {
-    const r = await fetch(`${API}/api/companies/${encodeURIComponent(slug)}`, { cache: "no-store" });
+    const r = await fetch(`${API}/api/companies/${encodeURIComponent(slug)}`, { next: { revalidate: 300 } });
     if (r.status === 404) return { company: null, notFound: true, error: null };
     if (!r.ok) return { company: null, notFound: false, error: `Backend returned ${r.status}` };
     return { company: await r.json(), notFound: false, error: null };
@@ -19,6 +19,8 @@ async function load(slug: string): Promise<Result> {
     return { company: null, notFound: false, error: `Could not reach the backend at ${API} (${e?.cause?.code ?? e?.message ?? "network error"})` };
   }
 }
+
+export const revalidate = 300;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { company: c } = await load((await params).slug);
@@ -62,11 +64,22 @@ export default async function CompanyPage({ params }: { params: Promise<{ slug: 
       </section>
       {c.categories.length > 0 && <section className="mt-6 flex flex-wrap gap-2">
         {c.categories.map(x => <span key={x} className="rounded-full border bg-white px-3 py-1 text-sm">{x}</span>)}</section>}
+      {((c.specialities?.length ?? 0) > 0 || (c.capabilities?.length ?? 0) > 0) && (
+        <section className="mt-6 rounded-xl border bg-white p-6"><h2 className="mb-1 font-semibold">Verified capabilities</h2>
+          <p className="mb-3 text-xs text-slate-500">Confirmed by PharmaConnect.</p>
+          {(c.specialities?.length ?? 0) > 0 && <div className="mb-4"><h3 className="mb-1.5 text-sm text-slate-500">Specialities</h3>
+            <div className="flex flex-wrap gap-2">{c.specialities!.map(x => <span key={x} className="rounded-full bg-teal-600/10 px-3 py-1 text-sm font-medium text-teal-800">{x}</span>)}</div></div>}
+          {(c.capabilities?.length ?? 0) > 0 && <div><h3 className="mb-1.5 text-sm text-slate-500">Manufacturing</h3>
+            <ul className="grid gap-2 sm:grid-cols-2">{c.capabilities!.map(x => (
+              <li key={x.category} className="rounded-lg border p-3 text-sm"><span className="font-semibold">{x.category}</span>
+                <span className="text-slate-500"> · {x.dosage_form_group}</span>
+                {x.formulation_types.length > 0 && <div className="mt-0.5 text-xs text-slate-600">{x.formulation_types.join(", ")}</div>}</li>))}</ul></div>}
+        </section>)}
       <section className="mt-6"><h2 className="mb-3 font-semibold">Products</h2>
         {c.products.length === 0 ? <p className="rounded-xl border bg-white p-6 text-sm text-slate-500">No products listed yet.</p> :
           <div className="grid gap-3 sm:grid-cols-2">{c.products.map(p => (
-            <div key={p.slug} className="rounded-xl border bg-white p-4"><div className="font-semibold">{p.name}</div>
-              <div className="text-sm text-slate-500">{[p.composition, p.dosage_form, p.pack_size].filter(Boolean).join(" · ")}</div></div>))}</div>}
+            <Link key={p.slug} href={`/products/${p.slug}`} className="rounded-xl border bg-white p-4 hover:border-brand-600"><div className="font-semibold">{p.name}</div>
+              <div className="text-sm text-slate-500">{[p.composition, p.dosage_form, p.pack_size].filter(Boolean).join(" · ")}</div></Link>))}</div>}
       </section>
     </div>);
 }

@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
@@ -66,6 +67,7 @@ export default function AdminCompanies() {
                   {c.status !== "APPROVED" && <button onClick={() => setStatus(c.id, "APPROVED")} className="rounded bg-emerald-600 px-3 py-1 text-xs font-semibold text-white">Approve</button>}
                   {c.status === "PENDING" && <button onClick={() => setStatus(c.id, "REJECTED")} className="rounded bg-red-600 px-3 py-1 text-xs font-semibold text-white">Reject</button>}
                   {c.status === "APPROVED" && <button onClick={() => setStatus(c.id, "SUSPENDED")} className="rounded bg-slate-600 px-3 py-1 text-xs font-semibold text-white">Suspend</button>}
+                  <Link href={`/admin/companies/${c.id}/capabilities`} className="inline-block rounded border border-teal-300 px-3 py-1 text-xs font-semibold text-teal-800">Capabilities</Link>
                   <button onClick={() => remove(c)} className="rounded border border-red-300 px-3 py-1 text-xs font-semibold text-red-700 hover:bg-red-50">Delete</button>
                 </td></tr>))}
           </tbody>
