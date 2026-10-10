@@ -9,6 +9,7 @@ async function get<T>(path: string, fallback: T, fresh = false): Promise<T> {
   catch { return fallback; }
 }
 type Cat = { id: number; name: string; slug: string; parent_id: number | null };
+type Spec = { id: number; name: string };
 type Loc = { id: number; name: string; type: "STATE" | "CITY" };
 
 const STEPS = [
@@ -19,12 +20,13 @@ const STEPS = [
 ];
 
 export default async function Home() {
-  const [cats, companies, products, locs, featured] = await Promise.all([
+  const [cats, companies, products, locs, featured, specialities] = await Promise.all([
     get<Cat[]>("/api/categories", []),
     get<{ items: CompanyCardData[]; total: number }>("/api/companies?page_size=6", { items: [], total: 0 }),
     get<{ total: number }>("/api/products?page_size=1", { total: 0 }),
     get<Loc[]>("/api/locations", []),
     get<{ items: CompanyCardData[] }>("/api/companies/featured", { items: [] }, true),
+    get<Spec[]>("/api/catalog/specialities", []),
   ]);
   // Admin picks the featured list (Admin > Featured). Until one is chosen, fall back to the latest companies.
   const featuredList = featured.items.length > 0 ? featured.items : companies.items;
@@ -51,6 +53,20 @@ export default async function Home() {
           <div><div className="font-display text-2xl font-semibold text-slate-900">{products.total}</div><div className="text-sm text-slate-500">Listed products</div></div>
         </div>)}
     </section>
+
+    {specialities.length > 0 && (
+      <section className="mx-auto max-w-6xl px-4 py-12">
+        <div className="flex items-end justify-between">
+          <h2 className="font-display text-2xl font-semibold text-white">Search by speciality</h2>
+          <Link href="/find" className="text-sm font-semibold text-teal-300 hover:text-teal-200">Advanced search</Link>
+        </div>
+        <p className="mt-1 text-slate-400">Find manufacturers by therapeutic area.</p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          {specialities.map(s => (
+            <Link key={s.id} href={`/find?tab=speciality&speciality=${s.id}`}
+              className="glass rounded-full border px-5 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:border-teal-500 hover:text-teal-800">{s.name}</Link>))}
+        </div>
+      </section>)}
 
     {cats.length > 0 && (
       <section className="mx-auto max-w-6xl px-4 py-12">
