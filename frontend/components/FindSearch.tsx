@@ -90,7 +90,7 @@ export default function FindSearch() {
       <div role="tablist" className="glass mb-4 flex gap-2 rounded-2xl border p-1.5">
         {tabBtn("speciality", "Search by Speciality")}{tabBtn("category", "Search by Product Category")}
       </div>
-      <form onSubmit={e => { e.preventDefault(); search(); }} className="glass rounded-2xl border p-5">
+      <form onSubmit={e => { e.preventDefault(); search(); }} className="glass relative z-20 rounded-2xl border p-5">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {tab === "speciality" ? (<>
             <SearchableSelect label="Speciality" value={draft.speciality} options={specs} onChange={v => set({ speciality: v })} placeholder="Any speciality" />
@@ -125,7 +125,7 @@ export default function FindSearch() {
         </div>
       </form>
 
-      <section className="mt-6" aria-live="polite">
+      <section className="relative z-0 mt-6" aria-live="polite">
         {!hasCriteria && <p className="glass rounded-xl border p-8 text-center text-slate-600">
           {tab === "speciality" ? "Choose a speciality, then press Search." : "Choose a dosage form and product category, then press Search."}</p>}
         {hasCriteria && busy && <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map(i => <div key={i} className="glass h-52 animate-pulse rounded-2xl border" />)}</div>}
