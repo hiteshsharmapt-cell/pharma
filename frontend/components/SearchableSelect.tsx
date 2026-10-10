@@ -19,6 +19,7 @@ export default function SearchableSelect({ label, value, options, onChange, plac
     document.addEventListener("mousedown", close); return () => document.removeEventListener("mousedown", close);
   }, [open]);
 
+  // The list panel below is solid white on purpose: the site-wide "bg-white" is frosted glass and would let the page show through.
   const pick = (v: number | "") => { onChange(v); setOpen(false); setQ(""); };
   return (
     <div ref={box} className="relative">
@@ -30,7 +31,8 @@ export default function SearchableSelect({ label, value, options, onChange, plac
         <span aria-hidden className="ml-2 text-xs text-slate-500">▾</span>
       </button>
       {open && (
-        <div className="absolute z-30 mt-1 w-full rounded-lg border border-slate-200 bg-white shadow-xl">
+        <div className="absolute z-30 mt-1 w-full rounded-lg border border-slate-200 shadow-xl"
+          style={{ background: "#ffffff", backdropFilter: "none", WebkitBackdropFilter: "none" }}>
           <input autoFocus value={q} onChange={e => setQ(e.target.value)} onKeyDown={e => { if (e.key === "Escape") setOpen(false); }}
             placeholder="Type to search…" aria-label={`Search ${label}`} className="w-full rounded-t-lg border-b px-3 py-2 text-sm outline-none" />
           <ul role="listbox" className="max-h-60 overflow-auto py-1 text-sm">
