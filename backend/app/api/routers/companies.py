@@ -83,4 +83,4 @@ def get_company(slug: str, db: Session = Depends(get_db)):
     return {**_card(c, names), "specialities": sorted(specs), "capabilities": sorted(caps, key=lambda x: (x["dosage_form_group"], x["category"])),
             "address": c.address, "brochure_url": c.brochure_url,
             "products": [{"name": p.name, "slug": p.slug, "composition": p.composition,
-                          "dosage_form": p.dosage_form, "pack_size": p.pack_size} for p in products]}
+                          "dosage_form": p.dosage_form, "pack_size": p.pack_size, "image_url": p.image_url} for p in products]}

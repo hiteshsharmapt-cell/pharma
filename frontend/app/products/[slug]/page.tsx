@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { cdn } from "@/lib/img";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-type Card = { name: string; slug: string; composition: string | null; dosage_form: string | null; pack_size: string | null;
+type Card = { name: string; slug: string; composition: string | null; dosage_form: string | null; pack_size: string | null; image_url?: string | null;
   company_name: string; company_slug: string; city: string | null; state: string | null };
 type Product = Card & { description: string | null; related: Card[] };
 type Result = { product: Product | null; missing: boolean; error: string | null };
@@ -37,8 +38,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     <div className="mx-auto max-w-4xl px-4 py-10">
       <nav className="mb-4 text-sm text-slate-500"><Link href="/">Home</Link> / <Link href="/products">Products</Link> / {p.name}</nav>
       <header className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
-        <div><h1 className="text-2xl font-bold">{p.name}</h1>
-          <p className="mt-1 text-slate-600">{p.composition ?? ""}</p></div>
+        <div className="flex items-center gap-4">{p.image_url && <img src={cdn(p.image_url, 400)} alt={p.name} className="h-28 w-28 rounded-xl border bg-white object-contain" />}<div><h1 className="text-2xl font-bold">{p.name}</h1>
+          <p className="mt-1 text-slate-600">{p.composition ?? ""}</p></div></div>
         <div className="flex gap-2"><Link href={`/products/compare?name=${encodeURIComponent(p.name.trim().toLowerCase())}`} className="rounded-lg border border-teal-700/30 px-5 py-2.5 font-semibold text-teal-800">Compare suppliers</Link>
         <Link href="/post-requirement" className="rounded-lg bg-brand-600 px-5 py-2.5 font-semibold text-white">Enquire Now</Link></div>
       </header>

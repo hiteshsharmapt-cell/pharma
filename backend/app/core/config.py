@@ -7,5 +7,9 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRE_MINUTES: int = 720
     CORS_ORIGINS: str = "http://localhost:3000"
+    # Image hosting (Cloudinary). Leave empty to disable uploads; the rest of the site keeps working.
+    CLOUDINARY_CLOUD_NAME: str = ""
+    CLOUDINARY_API_KEY: str = ""
+    CLOUDINARY_API_SECRET: str = ""
 
 settings = Settings()

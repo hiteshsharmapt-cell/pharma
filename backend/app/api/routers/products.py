@@ -27,13 +27,13 @@ def list_products(q: str | None = None, page: int = Query(1, ge=1), page_size: i
         f.append(or_(Product.name.ilike(like), Product.composition.ilike(like), Company.name.ilike(like)))
     k = _key()
     grouped = (select(k.label("key"), func.min(Product.name).label("name"), func.min(Product.composition).label("composition"),
-                      func.min(Product.dosage_form).label("dosage_form"),
+                      func.min(Product.dosage_form).label("dosage_form"), func.max(Product.image_url).label("image_url"),
                       func.count(func.distinct(Product.company_id)).label("suppliers"))
                .join(Company, Company.id == Product.company_id).where(*f).group_by(k))
     total = db.scalar(select(func.count()).select_from(grouped.subquery())) or 0
     rows = db.execute(grouped.order_by(func.min(Product.name)).offset((page - 1) * page_size).limit(page_size)).all()
     items = [{"key": r.key, "name": r.name, "composition": r.composition, "dosage_form": r.dosage_form,
-              "suppliers": r.suppliers} for r in rows]
+              "image_url": r.image_url, "suppliers": r.suppliers} for r in rows]
     return {"items": items, "total": total, "page": page, "page_size": page_size}
 
 @router.get("/compare")

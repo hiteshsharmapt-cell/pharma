@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useAuth, homeFor } from "@/lib/auth";
+import { LOGO_SRC, SITE_NAME } from "@/lib/brand";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -9,10 +10,8 @@ export default function Navbar() {
     <header className="sticky top-0 z-20 border-b border-white/70 bg-white/70 shadow-[0_6px_24px_rgba(4,36,48,0.18)] backdrop-blur-xl">
       <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3">
         <Link href="/" className="flex items-center gap-2 font-display text-lg font-semibold text-black">
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-cyan-600 text-white">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
-          </span>
-          PharmaConnect
+          <img src={LOGO_SRC} alt="" className="h-9 w-auto max-w-[140px] object-contain" />
+          {SITE_NAME}
         </Link>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium">
           <Link href="/find" className={link}>Find Manufacturers</Link>

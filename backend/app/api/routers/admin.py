@@ -94,7 +94,7 @@ def list_companies(status: CompanyStatus | None = None, q: str | None = None, db
     names = {l.id: l.name for l in db.scalars(select(Location)).all()}
     return [{"id": c.id, "name": c.name, "slug": c.slug, "business_type": c.business_type,
              "city": names.get(c.city_id), "state": names.get(c.state_id),
-             "owner_name": u.name, "owner_email": u.email, "owner_mobile": u.mobile,
+             "logo_url": c.logo_url, "owner_name": u.name, "owner_email": u.email, "owner_mobile": u.mobile,
              "has_email": not _is_placeholder(u.email),
              "status": c.status.value, "featured_rank": c.featured_rank, "created_at": c.created_at} for c, u in db.execute(stmt).all()]
 
@@ -143,7 +143,7 @@ def list_products(status: ProductStatus | None = None, db: Session = Depends(get
     if status:
         stmt = stmt.where(Product.status == status)
     return [{"id": p.id, "name": p.name, "composition": p.composition, "dosage_form": p.dosage_form,
-             "pack_size": p.pack_size, "company": c.name, "company_status": c.status.value,
+             "pack_size": p.pack_size, "image_url": p.image_url, "company": c.name, "company_status": c.status.value,
              "status": p.status.value} for p, c in db.execute(stmt).all()]
 
 @router.patch("/products/{product_id}/status")

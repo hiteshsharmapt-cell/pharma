@@ -1,12 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { cdn } from "@/lib/img";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 export const metadata: Metadata = {
   title: "Pharma Products Directory",
   description: "Search pharmaceutical products and compare verified manufacturers and suppliers across India.",
 };
-type Item = { key: string; name: string; composition: string | null; dosage_form: string | null; suppliers: number };
+type Item = { key: string; name: string; composition: string | null; dosage_form: string | null; image_url?: string | null; suppliers: number };
 
 export default async function Products({ searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }) {
   const { q = "", page = "1" } = await searchParams;
@@ -32,6 +33,7 @@ export default async function Products({ searchParams }: { searchParams: Promise
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {data.items.map(p => (
           <article key={p.key} className="glass flex flex-col rounded-2xl border p-5 transition-colors hover:border-teal-400">
+            {p.image_url && <img src={cdn(p.image_url, 500)} alt={p.name} loading="lazy" className="mb-3 h-36 w-full rounded-xl border bg-white object-contain" />}
             <h2 className="font-display font-semibold text-slate-900">{p.name}</h2>
             <p className="mt-1 text-sm text-slate-600">{p.composition ?? "—"}</p>
             <p className="text-sm text-slate-500">{p.dosage_form ?? ""}</p>

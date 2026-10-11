@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { cdn } from "@/lib/img";
 
 export type Supplier = { id: number; slug: string; company_name: string; company_slug: string; business_type: string;
-  city: string | null; state: string | null; pack_size: string | null; dosage_form: string | null };
+  city: string | null; state: string | null; pack_size: string | null; dosage_form: string | null; image_url?: string | null };
 
 export default function CompareTable({ suppliers, productName }: { suppliers: Supplier[]; productName: string }) {
   const [state, setState] = useState("");
@@ -35,7 +36,7 @@ export default function CompareTable({ suppliers, productName }: { suppliers: Su
                 <th className="p-3">Pack size</th><th className="p-3">Form</th><th className="p-3 text-right">Action</th></tr></thead>
             <tbody>{rows.map(s => (
               <tr key={s.id} className="border-b last:border-0 hover:bg-white/50">
-                <td className="p-3 font-semibold text-slate-900"><Link href={`/companies/${s.company_slug}`} className="hover:text-teal-700">{s.company_name}</Link></td>
+                <td className="p-3 font-semibold text-slate-900"><div className="flex items-center gap-3">{s.image_url && <img src={cdn(s.image_url, 120)} alt="" loading="lazy" className="h-10 w-10 shrink-0 rounded border bg-white object-contain" />}<Link href={`/companies/${s.company_slug}`} className="hover:text-teal-700">{s.company_name}</Link></div></td>
                 <td className="p-3">{[s.city, s.state].filter(Boolean).join(", ") || "—"}</td>
                 <td className="p-3">{s.business_type}</td>
                 <td className="p-3">{s.pack_size ?? "—"}</td>

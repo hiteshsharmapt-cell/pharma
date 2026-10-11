@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import HeroSearch from "@/components/HeroSearch";
 import CompanyCard, { type CompanyCardData } from "@/components/CompanyCard";
 
@@ -30,10 +32,13 @@ export default async function Home() {
   ]);
   // Admin picks the featured list (Admin > Featured). Until one is chosen, fall back to the latest companies.
   const featuredList = featured.items.length > 0 ? featured.items : companies.items;
+  // Optional hero banner: drop hero.jpg / hero.png / hero.webp into frontend/public and it appears automatically.
+  const heroFile = ["hero.jpg", "hero.png", "hero.webp"].find(f => existsSync(join(process.cwd(), "public", f)));
   const cities = locs.filter(l => l.type === "CITY").slice(0, 12);
 
   return (<>
     <section className="mx-auto max-w-6xl px-4 pb-16 pt-16 sm:pt-24">
+      <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-center lg:justify-between">
       <div className="hero-in max-w-2xl">
         <p className="inline-block rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-teal-100 backdrop-blur">India&apos;s B2B marketplace for pharma buyers and suppliers</p>
         <h1 className="headline mt-6 font-display text-4xl font-semibold leading-tight sm:text-6xl">Find Pharmaceutical Companies, Products &amp; Business Opportunities</h1>
@@ -46,6 +51,8 @@ export default async function Home() {
             <Link href="/companies" className="glass rounded-full border px-7 py-3 font-semibold text-teal-800">Browse Companies</Link>
           </div>
         </div>
+      </div>
+      {heroFile && <img src={`/${heroFile}`} alt="" className="hidden w-full max-w-md rounded-3xl border border-white/60 object-cover shadow-2xl shadow-black/30 lg:block" style={{ aspectRatio: "4 / 5" }} />}
       </div>
       {(companies.total > 0 || products.total > 0) && (
         <div className="glass mt-12 flex w-fit flex-wrap gap-x-10 gap-y-3 rounded-2xl border px-6 py-4">

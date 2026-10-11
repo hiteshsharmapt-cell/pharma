@@ -6,8 +6,9 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { Alert } from "@/components/ui";
 import SupplierNav from "@/components/SupplierNav";
+import ImageUpload from "@/components/ImageUpload";
 
-type Stats = { company_name: string; company_status: string; total_products: number; approved_products: number; new_leads: number; total_leads: number };
+type Stats = { company_name: string; logo_url?: string | null; company_status: string; total_products: number; approved_products: number; new_leads: number; total_leads: number };
 
 export default function SupplierDashboard() {
   const { user, loading } = useAuth(); const router = useRouter();
@@ -23,6 +24,8 @@ export default function SupplierDashboard() {
       <SupplierNav />
       <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>
       {s && <p className="text-slate-500">{s.company_name}</p>}
+      {s && <div className="mt-4 w-fit rounded-xl border bg-white p-4"><h2 className="mb-2 text-sm font-semibold">Company logo</h2>
+        <ImageUpload label="Logo" field="logo_url" size={72} src={s.logo_url} path="/api/supplier/logo" onChange={u => setS({ ...s, logo_url: u })} /></div>}
       {error && <div className="mt-4"><Alert>{error}</Alert></div>}
       {s?.company_status === "PENDING" && <p className="mt-4 rounded-lg bg-amber-50 p-4 text-sm text-amber-800">Your company is awaiting admin approval. Leads are available once it is approved.</p>}
       <div className="mt-6 grid gap-4 sm:grid-cols-3 lg:grid-cols-5">

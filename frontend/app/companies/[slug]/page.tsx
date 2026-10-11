@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { cdn } from "@/lib/img";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-type Company = { name: string; slug: string; description: string | null; business_type: string; city: string | null;
+type Company = { name: string; logo_url?: string | null; slug: string; description: string | null; business_type: string; city: string | null;
   state: string | null; address: string | null; brochure_url: string | null; categories: string[]; specialities?: string[]; capabilities?: { category: string; dosage_form_group: string; formulation_types: string[] }[];
-  products: { name: string; slug: string; composition: string | null; dosage_form: string | null; pack_size: string | null }[] };
+  products: { name: string; slug: string; composition: string | null; dosage_form: string | null; pack_size: string | null; image_url?: string | null }[] };
 
 type Result = { company: Company | null; notFound: boolean; error: string | null };
 
@@ -45,7 +46,9 @@ export default async function CompanyPage({ params }: { params: Promise<{ slug: 
     <div className="mx-auto max-w-4xl px-4 py-10">
       <nav className="mb-4 text-sm text-slate-500"><Link href="/">Home</Link> / <Link href="/companies">Companies</Link> / {c.name}</nav>
       <header className="flex flex-wrap items-center gap-4 rounded-xl border bg-white p-6">
-        <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-brand-100 text-2xl font-bold text-brand-700">{c.name[0]}</div>
+        {c.logo_url
+          ? <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border bg-white p-1"><img src={cdn(c.logo_url, 200)} alt={`${c.name} logo`} className="h-full w-full object-contain" /></div>
+          : <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-brand-100 text-2xl font-bold text-brand-700">{c.name[0]}</div>}
         <div className="flex-1">
           <h1 className="text-2xl font-bold">{c.name} <span className="ml-1 rounded-full bg-emerald-100 px-2 py-0.5 align-middle text-xs text-emerald-800">Approved</span></h1>
           <p className="text-slate-500">{where} · {c.business_type}</p>
@@ -78,8 +81,8 @@ export default async function CompanyPage({ params }: { params: Promise<{ slug: 
       <section className="mt-6"><h2 className="mb-3 font-semibold">Products</h2>
         {c.products.length === 0 ? <p className="rounded-xl border bg-white p-6 text-sm text-slate-500">No products listed yet.</p> :
           <div className="grid gap-3 sm:grid-cols-2">{c.products.map(p => (
-            <Link key={p.slug} href={`/products/${p.slug}`} className="rounded-xl border bg-white p-4 hover:border-brand-600"><div className="font-semibold">{p.name}</div>
-              <div className="text-sm text-slate-500">{[p.composition, p.dosage_form, p.pack_size].filter(Boolean).join(" · ")}</div></Link>))}</div>}
+            <Link key={p.slug} href={`/products/${p.slug}`} className="flex items-center gap-3 rounded-xl border bg-white p-4 hover:border-brand-600">{p.image_url && <img src={cdn(p.image_url, 160)} alt={p.name} loading="lazy" className="h-14 w-14 shrink-0 rounded-lg border bg-white object-contain" />}<div className="min-w-0"><div className="font-semibold">{p.name}</div>
+              <div className="text-sm text-slate-500">{[p.composition, p.dosage_form, p.pack_size].filter(Boolean).join(" · ")}</div></div></Link>))}</div>}
       </section>
     </div>);
 }

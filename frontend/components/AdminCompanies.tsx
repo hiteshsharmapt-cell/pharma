@@ -6,9 +6,10 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { Alert } from "@/components/ui";
 import AdminNav from "@/components/AdminNav";
+import ImageUpload from "@/components/ImageUpload";
 
 type Company = { id: number; name: string; business_type: string; city: string | null; state: string | null;
-  owner_name: string; owner_email: string; owner_mobile: string; has_email: boolean; status: string; created_at: string };
+  owner_name: string; owner_email: string; owner_mobile: string; has_email: boolean; logo_url?: string | null; status: string; created_at: string };
 const TABS = ["PENDING", "APPROVED", "REJECTED", "SUSPENDED"];
 const badge: Record<string, string> = { PENDING: "bg-amber-100 text-amber-800", APPROVED: "bg-emerald-100 text-emerald-800",
   REJECTED: "bg-red-100 text-red-800", SUSPENDED: "bg-slate-200 text-slate-700" };
@@ -85,7 +86,7 @@ export default function AdminCompanies() {
                   {c.status === "PENDING" && <button onClick={() => setStatus(c.id, "REJECTED")} className="rounded bg-red-600 px-3 py-1 text-xs font-semibold text-white">Reject</button>}
                   {c.status === "APPROVED" && <button onClick={() => setStatus(c.id, "SUSPENDED")} className="rounded bg-slate-600 px-3 py-1 text-xs font-semibold text-white">Suspend</button>}
                   <Link href={`/admin/companies/${c.id}/capabilities`} className="inline-block rounded border border-teal-300 px-3 py-1 text-xs font-semibold text-teal-800">Capabilities</Link>
-                  <button onClick={() => openEmail(c)} className="rounded border border-slate-300 px-3 py-1 text-xs font-semibold">{c.has_email ? "Email" : "Add email"}</button>
+                  <button onClick={() => openEmail(c)} className="rounded border border-slate-300 px-3 py-1 text-xs font-semibold">{c.has_email ? "Email / Logo" : "Add email / logo"}</button>
                   <button onClick={() => remove(c)} className="rounded border border-red-300 px-3 py-1 text-xs font-semibold text-red-700 hover:bg-red-50">Delete</button>
                 </td></tr>))}
           </tbody>
@@ -94,7 +95,10 @@ export default function AdminCompanies() {
       {emailFor && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => setEmailFor(null)}>
           <div className="w-full max-w-md rounded-xl bg-white p-5 shadow-xl" style={{ background: "#fff" }} onClick={e => e.stopPropagation()}>
-            <h2 className="text-lg font-bold">Email for {emailFor.name}</h2>
+            <h2 className="text-lg font-bold">{emailFor.name}</h2>
+            <div className="mb-4 border-b pb-4"><ImageUpload label="Logo" field="logo_url" src={emailFor.logo_url} path={`/api/admin/companies/${emailFor.id}/logo`}
+              onChange={u => { setEmailFor({ ...emailFor, logo_url: u }); load(); }} /></div>
+            <h3 className="mb-1 text-sm font-semibold">Login email</h3>
             <p className="mb-3 text-xs text-slate-500">This is the company's login email. Public pages never show it.</p>
             <input value={emailVal} onChange={e => setEmailVal(e.target.value)} type="email" placeholder="name@company.com"
               className="mb-2 w-full rounded-lg border px-3 py-2 text-sm" />

@@ -26,7 +26,7 @@ def _approved_company(user: User) -> Company:
 def dashboard(user: User = Depends(require_supplier), db: Session = Depends(get_db)):
     c = _company(user)
     count = lambda *w: db.scalar(select(func.count()).select_from(w[0]).where(*w[1:])) or 0
-    return {"company_name": c.name, "company_status": c.status.value,
+    return {"company_name": c.name, "logo_url": c.logo_url, "company_status": c.status.value,
             "total_products": count(Product, Product.company_id == c.id),
             "approved_products": count(Product, Product.company_id == c.id, Product.status == ProductStatus.APPROVED),
             "new_leads": count(Lead, Lead.supplier_id == c.id, Lead.status == LeadStatus.NEW),
@@ -76,7 +76,7 @@ class ProductBody(BaseModel):
 
 def _product_out(p: Product) -> dict:
     return {"id": p.id, "name": p.name, "slug": p.slug, "composition": p.composition, "dosage_form": p.dosage_form,
-            "pack_size": p.pack_size, "description": p.description, "status": p.status.value}
+            "pack_size": p.pack_size, "description": p.description, "image_url": p.image_url, "status": p.status.value}
 
 def _own_product(db: Session, user: User, product_id: int) -> Product:
     c = _company(user)
