@@ -5,6 +5,7 @@ import { AuthProvider } from "@/lib/auth";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Scene from "@/components/Scene";
+import TawkChat from "@/components/TawkChat";
 
 const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Navbar />
           <main className="relative">{children}</main>
           <Footer />
+          <TawkChat />
         </AuthProvider>
       </body>
     </html>);
