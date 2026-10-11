@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
+import re, secrets
 from pydantic import BaseModel, Field
-from sqlalchemy import or_, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 from app.api.deps import require_admin
+from app.core.security import hash_password
 from app.db.base import get_db
 from app.models import (Company, CompanyStatus, Lead, Location, Product, ProductStatus, Requirement,
                         RequirementStatus, Role, User)
@@ -11,6 +13,75 @@ router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(re
 
 class StatusIn(BaseModel):
     status: CompanyStatus
+
+PLACEHOLDER_DOMAIN = "unclaimed.pharmaconnect.invalid"
+_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+def _is_placeholder(email: str | None) -> bool:
+    return bool(email) and email.lower().endswith("@" + PLACEHOLDER_DOMAIN)
+
+def _supplier_owner(db: Session, company: Company) -> User:
+    owner = db.get(User, company.user_id)
+    if not owner or owner.role != Role.SUPPLIER:  # never touch an admin/buyer account
+        raise HTTPException(400, "This company's login is not a supplier account")
+    return owner
+
+def _email_state(company: Company, owner: User) -> dict:
+    real = not _is_placeholder(owner.email)
+    return {"company_id": company.id, "name": company.name, "has_email": real,
+            "email": owner.email if real else None, "login_email": owner.email}
+
+class EmailIn(BaseModel):
+    email: str = Field(max_length=254)
+    reset_password: bool = False  # True -> generate a new temporary password, shown once
+
+@router.get("/companies/{company_id}/email")
+def get_company_email(company_id: int, db: Session = Depends(get_db)):
+    company = db.get(Company, company_id)
+    if not company:
+        raise HTTPException(404, "Company not found")
+    return _email_state(company, _supplier_owner(db, company))
+
+@router.put("/companies/{company_id}/email")
+def set_company_email(company_id: int, data: EmailIn, db: Session = Depends(get_db)):
+    """Add or change the company's login/contact email. Optionally issues a new temporary password (returned once)."""
+    company = db.get(Company, company_id)
+    if not company:
+        raise HTTPException(404, "Company not found")
+    owner = _supplier_owner(db, company)
+    email = data.email.strip().lower()
+    if not _EMAIL_RE.match(email) or _is_placeholder(email):
+        raise HTTPException(422, "Enter a valid email address")
+    clash = db.scalar(select(User.id).where(func.lower(User.email) == email, User.id != owner.id))
+    if clash:
+        raise HTTPException(409, "This email is already used by another account")
+    was_placeholder = _is_placeholder(owner.email)
+    owner.email = email
+    company.email = email
+    temp = None
+    if data.reset_password or was_placeholder:  # a placeholder account has an unknown password: issue one
+        temp = secrets.token_urlsafe(9)
+        owner.password_hash = hash_password(temp)
+    db.commit()
+    return {**_email_state(company, owner), "temporary_password": temp}
+
+@router.delete("/companies/{company_id}/email")
+def delete_company_email(company_id: int, db: Session = Depends(get_db)):
+    """Remove the real email: login reverts to an unusable placeholder, the contact email is cleared, and the
+    old password stops working. The company stays listed."""
+    company = db.get(Company, company_id)
+    if not company:
+        raise HTTPException(404, "Company not found")
+    owner = _supplier_owner(db, company)
+    slug = re.sub(r"[^a-z0-9]+", "-", company.slug.lower()).strip("-") or f"company-{company.id}"
+    placeholder = f"{slug}@{PLACEHOLDER_DOMAIN}"
+    if db.scalar(select(User.id).where(User.email == placeholder, User.id != owner.id)):
+        placeholder = f"{slug}-{company.id}@{PLACEHOLDER_DOMAIN}"
+    owner.email = placeholder
+    owner.password_hash = hash_password(secrets.token_urlsafe(24))  # nobody knows it: login disabled
+    company.email = None
+    db.commit()
+    return _email_state(company, owner)
 
 @router.get("/companies")
 def list_companies(status: CompanyStatus | None = None, q: str | None = None, db: Session = Depends(get_db)):
@@ -24,6 +95,7 @@ def list_companies(status: CompanyStatus | None = None, q: str | None = None, db
     return [{"id": c.id, "name": c.name, "slug": c.slug, "business_type": c.business_type,
              "city": names.get(c.city_id), "state": names.get(c.state_id),
              "owner_name": u.name, "owner_email": u.email, "owner_mobile": u.mobile,
+             "has_email": not _is_placeholder(u.email),
              "status": c.status.value, "featured_rank": c.featured_rank, "created_at": c.created_at} for c, u in db.execute(stmt).all()]
 
 @router.patch("/companies/{company_id}/status")
