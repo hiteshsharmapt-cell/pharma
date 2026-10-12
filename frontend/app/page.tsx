@@ -42,7 +42,7 @@ export default async function Home() {
       <div className="hero-in max-w-2xl">
         <p className="inline-block rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-teal-100 backdrop-blur">India&apos;s B2B marketplace for pharma buyers and suppliers</p>
         <h1 className="headline mt-6 font-display text-4xl font-semibold leading-tight sm:text-6xl">Find Pharmaceutical Companies, Products &amp; Business Opportunities</h1>
-        <p className="mt-5 max-w-xl text-lg text-slate-300">PharmaConnect links pharmaceutical buyers with verified manufacturers, PCD franchise companies and suppliers, so the right partner is one search away.</p>
+        <p className="mt-5 max-w-xl text-lg text-slate-300">YesToPharma links pharmaceutical buyers with verified manufacturers, PCD franchise companies and suppliers, so the right partner is one search away.</p>
         <div className="space-y-5">
           <HeroSearch />
           <div className="flex flex-wrap gap-3">

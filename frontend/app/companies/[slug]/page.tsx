@@ -69,7 +69,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ slug: 
         {c.categories.map(x => <span key={x} className="rounded-full border bg-white px-3 py-1 text-sm">{x}</span>)}</section>}
       {((c.specialities?.length ?? 0) > 0 || (c.capabilities?.length ?? 0) > 0) && (
         <section className="mt-6 rounded-xl border bg-white p-6"><h2 className="mb-1 font-semibold">Verified capabilities</h2>
-          <p className="mb-3 text-xs text-slate-500">Confirmed by PharmaConnect.</p>
+          <p className="mb-3 text-xs text-slate-500">Confirmed by YesToPharma.</p>
           {(c.specialities?.length ?? 0) > 0 && <div className="mb-4"><h3 className="mb-1.5 text-sm text-slate-500">Specialities</h3>
             <div className="flex flex-wrap gap-2">{c.specialities!.map(x => <span key={x} className="rounded-full bg-teal-600/10 px-3 py-1 text-sm font-medium text-teal-800">{x}</span>)}</div></div>}
           {(c.capabilities?.length ?? 0) > 0 && <div><h3 className="mb-1.5 text-sm text-slate-500">Manufacturing</h3>

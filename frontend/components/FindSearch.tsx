@@ -139,7 +139,7 @@ export default function FindSearch() {
             <p className="mt-3 text-sm">Still nothing? <Link href="/post-requirement" className="font-semibold text-teal-800 underline">Post your requirement</Link> and we will find suppliers for you.</p></div>)}
         {hasCriteria && !busy && !error && res && res.items.length > 0 && (<>
           <p className="mb-3 text-sm text-slate-600">{res.total} compan{res.total === 1 ? "y" : "ies"} found</p>
-          {applied.unverified && <p className="mb-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">These results include companies whose speciality or product capability has been claimed but is <strong>not yet verified</strong> by PharmaConnect. Confirm directly with the company.</p>}
+          {applied.unverified && <p className="mb-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">These results include companies whose speciality or product capability has been claimed but is <strong>not yet verified</strong> by YesToPharma. Confirm directly with the company.</p>}
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{res.items.map(c => <CompanyCard key={c.id} c={c} />)}</div>
           {pages > 1 && <div className="mt-8 flex items-center justify-center gap-4 text-sm">
             <button disabled={res.page <= 1} onClick={() => push({ ...applied, page: res.page - 1 }, tab)} className="rounded-lg border bg-white px-3 py-1.5 disabled:opacity-40">← Previous</button>

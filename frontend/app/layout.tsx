@@ -11,7 +11,7 @@ const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap"
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
 
 export const metadata: Metadata = {
-  title: { default: "PharmaConnect — Pharmaceutical Companies, Products & Opportunities", template: "%s | PharmaConnect" },
+  title: { default: "YesToPharma — Pharmaceutical Companies, Products & Opportunities", template: "%s | YesToPharma" },
   description: "Connect pharmaceutical buyers and suppliers. Find companies, products and PCD franchise opportunities across India.",
 };
 

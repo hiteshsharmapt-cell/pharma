@@ -48,7 +48,7 @@ export default function SupplierCapabilities() {
     setSaving(true); setError(""); setMsg("");
     try {
       await api("/api/supplier/capabilities", { method: "PUT", json: { speciality_ids: [...selSpecs], capabilities: [...selCats].map(([product_category_id, formulation_type_ids]) => ({ product_category_id, formulation_type_ids })) } });
-      apply(await api<Mine>("/api/supplier/capabilities")); setMsg("Saved. New items are shown as pending until PharmaConnect verifies them.");
+      apply(await api<Mine>("/api/supplier/capabilities")); setMsg("Saved. New items are shown as pending until YesToPharma verifies them.");
     } catch (e: any) { setError(e.message); } finally { setSaving(false); }
   };
   if (loading || !user) return <p className="p-10 text-center text-slate-500">Loading…</p>;
@@ -57,7 +57,7 @@ export default function SupplierCapabilities() {
     <div className="mx-auto max-w-5xl px-4 py-8">
       <SupplierNav />
       <h1 className="text-2xl font-bold">Specialities &amp; manufacturing capabilities</h1>
-      <p className="mb-5 mt-1 text-sm text-slate-600">Tick what your company genuinely works in. Buyers only see an item as confirmed after PharmaConnect has verified it, so please be accurate and be ready to share proof such as licences or certificates.</p>
+      <p className="mb-5 mt-1 text-sm text-slate-600">Tick what your company genuinely works in. Buyers only see an item as confirmed after YesToPharma has verified it, so please be accurate and be ready to share proof such as licences or certificates.</p>
       {error && <div className="mb-3"><Alert>{error}</Alert></div>}{msg && <p className="mb-3 rounded-lg bg-emerald-50 p-3 text-sm font-medium text-emerald-800">{msg}</p>}
 
       <section className="mb-8 rounded-xl border bg-white p-5"><h2 className="mb-3 font-semibold">Specialities</h2>

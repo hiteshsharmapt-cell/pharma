@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="mt-20 border-t border-white/70 bg-white/70 backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl flex-wrap items-start justify-between gap-8 px-4 py-10 text-sm">
         <div className="max-w-xs">
-          <div className="flex items-center gap-2 font-display text-lg font-semibold text-black"><img src={LOGO_SRC} alt="" className="h-8 w-auto max-w-[120px] object-contain" />{SITE_NAME}</div>
+          <div className="flex items-center gap-2 font-display text-lg font-semibold text-black"><img src={LOGO_SRC} alt="" style={{ height: 44 }} className="w-auto object-contain" />{SITE_NAME}</div>
           <p className="mt-2 text-black">A B2B marketplace connecting pharmaceutical buyers with manufacturers, franchise companies and suppliers across India.</p>
         </div>
         <div className="flex gap-12">
@@ -20,6 +20,6 @@ export default function Footer() {
             <Link href="/login" className={link}>Supplier login</Link></div>
         </div>
       </div>
-      <div className="border-t border-slate-300/50 py-4 text-center text-xs text-black">© {new Date().getFullYear()} PharmaConnect. All rights reserved.</div>
+      <div className="border-t border-slate-300/50 py-4 text-center text-xs text-black">© {new Date().getFullYear()} YesToPharma. All rights reserved.</div>
     </footer>);
 }
