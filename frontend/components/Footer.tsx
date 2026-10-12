@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LOGO_SRC, SITE_NAME } from "@/lib/brand";
+import { CONTACT_PHONE, CONTACT_TEL } from "@/lib/contact";
 
 export default function Footer() {
   const link = "block text-black hover:text-teal-700";
@@ -12,12 +13,14 @@ export default function Footer() {
         </div>
         <div className="flex gap-12">
           <div className="space-y-2"><div className="font-semibold text-black">Explore</div>
+            <Link href="/find" className={link}>Find Manufacturers</Link>
             <Link href="/companies" className={link}>Companies</Link>
             <Link href="/products" className={link}>Products</Link>
             <Link href="/post-requirement" className={link}>Post Requirement</Link></div>
           <div className="space-y-2"><div className="font-semibold text-black">Suppliers</div>
             <Link href="/register" className={link}>List your company</Link>
-            <Link href="/login" className={link}>Supplier login</Link></div>
+            <Link href="/login" className={link}>Supplier login</Link>
+            <a href={`tel:${CONTACT_TEL}`} className={link}>Call: {CONTACT_PHONE}</a></div>
         </div>
       </div>
       <div className="border-t border-slate-300/50 py-4 text-center text-xs text-black">© {new Date().getFullYear()} YesToPharma. All rights reserved.</div>

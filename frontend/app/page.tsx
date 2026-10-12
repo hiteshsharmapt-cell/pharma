@@ -37,14 +37,14 @@ export default async function Home() {
   const cities = locs.filter(l => l.type === "CITY").slice(0, 12);
 
   return (<>
-    <section className="mx-auto max-w-6xl px-4 pb-16 pt-16 sm:pt-24">
+    <section className="mx-auto max-w-6xl px-4 pb-16 pt-4 sm:pt-6">
+      <div className="relative z-20 mb-12 max-w-3xl"><HeroSearch /></div>
       <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-center lg:justify-between">
       <div className="hero-in max-w-2xl">
         <p className="inline-block rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-teal-100 backdrop-blur">India&apos;s B2B marketplace for pharma buyers and suppliers</p>
         <h1 className="headline mt-6 font-display text-4xl font-semibold leading-tight sm:text-6xl">Find Pharmaceutical Companies, Products &amp; Business Opportunities</h1>
         <p className="mt-5 max-w-xl text-lg text-slate-300">YesToPharma links pharmaceutical buyers with verified manufacturers, PCD franchise companies and suppliers, so the right partner is one search away.</p>
         <div className="space-y-5">
-          <HeroSearch />
           <div className="flex flex-wrap gap-3">
             <Link href="/post-requirement" className="bg-brand-600 rounded-full px-7 py-3 font-semibold text-white">Post Your Requirement</Link>
             <Link href="/find" className="glass rounded-full border px-7 py-3 font-semibold text-teal-800">Find by Speciality / Product</Link>
