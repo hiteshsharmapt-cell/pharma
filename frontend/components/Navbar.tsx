@@ -21,7 +21,7 @@ export default function Navbar() {
           <Link href="/login" className={link}>Login</Link>
           <Link href="/register" className="bg-brand-600 rounded-full px-4 py-0.5 font-semibold text-white">Join Free</Link></>)}
       </div>
-      <div className="mx-auto max-w-6xl px-4 pb-2 pt-1">
+      <div className="mx-auto max-w-6xl px-4 pb-0 pt-0">
         <Link href="/" className="inline-flex items-center gap-3 font-display text-xl font-semibold text-white">
           <img src={LOGO_SRC} alt={SITE_NAME} style={{ height: 90 }} className="w-auto object-contain" />
           {SITE_NAME}

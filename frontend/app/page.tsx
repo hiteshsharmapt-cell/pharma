@@ -37,7 +37,7 @@ export default async function Home() {
   const cities = locs.filter(l => l.type === "CITY").slice(0, 12);
 
   return (<>
-    <section className="mx-auto max-w-6xl px-4 pb-16 pt-4 sm:pt-6">
+    <section className="mx-auto max-w-6xl px-4 pb-16 pt-0">
       <div className="relative z-20 mb-12 max-w-3xl"><HeroSearch /></div>
       <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-center lg:justify-between">
       <div className="hero-in max-w-2xl">
