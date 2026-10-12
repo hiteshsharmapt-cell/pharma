@@ -10,7 +10,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-20 border-b border-white/70 bg-white/70 shadow-[0_6px_24px_rgba(4,36,48,0.18)] backdrop-blur-xl">
       <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-2">
         <Link href="/" className="flex items-center gap-2 font-display text-lg font-semibold text-black">
-          <img src={LOGO_SRC} alt="" style={{ height: 56 }} className="w-auto object-contain" />
+          <img src={LOGO_SRC} alt="" style={{ height: 90 }} className="w-auto object-contain" />
           {SITE_NAME}
         </Link>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium">
