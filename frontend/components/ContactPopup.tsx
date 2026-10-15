@@ -19,6 +19,7 @@ export function tellChat(v: { name: string; phone: string; requirement?: string 
 export default function ContactPopup() {
   const path = usePathname();
   const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
   const [done, setDone] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
@@ -31,11 +32,11 @@ export default function ContactPopup() {
   useEffect(() => {
     if (SKIP.some(p => path.startsWith(p))) return;
     if (shownThisLoad) return;
-    const t = setTimeout(() => { shownThisLoad = true; setOpen(true); }, 1500);
+    const t = setTimeout(() => { shownThisLoad = true; setOpen(true); }, 1800);
     return () => clearTimeout(t);
   }, [path]);
 
-  const close = () => setOpen(false);
+  const close = () => { setClosing(true); setTimeout(() => { setOpen(false); setClosing(false); }, 220); };  // let the fade-out play first
   useEffect(() => {
     if (!open) return;
     const esc = (e: KeyboardEvent) => e.key === "Escape" && close();
@@ -54,20 +55,35 @@ export default function ContactPopup() {
       const v = { name: f.name.trim(), phone: f.phone.trim(), requirement: f.requirement.trim() };
       set(KEY_VISITOR, JSON.stringify(v)); tellChat(v);
       setDone(true);
-      setTimeout(() => setOpen(false), 2500);
+      setTimeout(close, 2500);
     } catch (e: any) { setErr(e.message || "Could not send. Please try again."); } finally { setBusy(false); }
   };
 
   if (!open) return null;
   const input = "w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900";
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/55 p-4" onClick={close}>
+    <div className={`cp-backdrop ${closing ? "cp-out" : ""} fixed inset-0 z-[60] flex items-center justify-center bg-black/55 p-4`} onClick={close}>
+      <style>{`
+        @keyframes cpFade { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes cpRise { from { opacity: 0; transform: translateY(28px) scale(.95) } to { opacity: 1; transform: none } }
+        @keyframes cpPop { 0% { transform: scale(.4); opacity: 0 } 70% { transform: scale(1.15) } 100% { transform: scale(1); opacity: 1 } }
+        .cp-backdrop { animation: cpFade .35s ease-out both; backdrop-filter: blur(4px); }
+        .cp-card { animation: cpRise .5s cubic-bezier(.16,1,.3,1) .05s both; }
+        .cp-card form > *, .cp-card form .space-y-3 > * { animation: cpFade .5s ease-out both; }
+        .cp-card form > :nth-child(1) { animation-delay: .25s } .cp-card form > :nth-child(2) { animation-delay: .32s }
+        .cp-card form .space-y-3 > :nth-child(1) { animation-delay: .38s } .cp-card form .space-y-3 > :nth-child(2) { animation-delay: .45s }
+        .cp-card form .space-y-3 > :nth-child(3) { animation-delay: .52s }
+        .cp-tick { display: inline-block; animation: cpPop .5s ease-out both; }
+        .cp-out { animation: none; opacity: 0; transition: opacity .22s ease-in; }
+        .cp-out .cp-card { animation: none; opacity: 0; transform: translateY(14px) scale(.97); transition: all .22s ease-in; }
+        @media (prefers-reduced-motion: reduce) { .cp-backdrop, .cp-card, .cp-card *, .cp-tick { animation: none !important; transition: none !important; } }
+      `}</style>
       <div role="dialog" aria-modal="true" aria-labelledby="cp-title" onClick={e => e.stopPropagation()}
-        className="relative w-full max-w-md rounded-2xl p-6 shadow-2xl" style={{ background: "#fff" }}>
+        className="cp-card relative w-full max-w-md rounded-2xl p-6 shadow-2xl" style={{ background: "#fff" }}>
         <button type="button" onClick={close} aria-label="Close" className="absolute right-3 top-3 rounded-full px-2 text-2xl leading-none text-slate-500 hover:text-slate-900">×</button>
         {done ? (
           <div className="py-8 text-center">
-            <div className="text-4xl">✅</div>
+            <div className="cp-tick text-4xl">✅</div>
             <h2 className="mt-3 font-display text-xl font-semibold text-slate-900">Thank you!</h2>
             <p className="mt-1 text-sm text-slate-600">We have your details and will contact you shortly.</p>
           </div>
