@@ -3,8 +3,8 @@ import { FormEvent, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { api } from "@/lib/api";
 
-const HIDE_DAYS = 7;
-const KEY_UNTIL = "yp_popup_until";
+// Shows on every page load/reload (not on every in-site click): this flag resets whenever the page is reloaded.
+let shownThisLoad = false;
 export const KEY_VISITOR = "yp_visitor";
 const SKIP = ["/admin", "/supplier", "/login", "/register", "/post-requirement"];
 
@@ -24,14 +24,18 @@ export default function ContactPopup() {
   const [err, setErr] = useState("");
   const [f, setF] = useState({ name: "", phone: "", requirement: "", company_website: "" });
 
+  useEffect(() => {  // returning visitor: pre-fill name and number so it takes one tap
+    try { const v = JSON.parse(get(KEY_VISITOR) || "null"); if (v?.name) setF(x => ({ ...x, name: v.name, phone: v.phone || "" })); } catch {}
+  }, []);
+
   useEffect(() => {
     if (SKIP.some(p => path.startsWith(p))) return;
-    if (Number(get(KEY_UNTIL) ?? 0) > Date.now()) return;
-    const t = setTimeout(() => setOpen(true), 2000);
+    if (shownThisLoad) return;
+    const t = setTimeout(() => { shownThisLoad = true; setOpen(true); }, 1500);
     return () => clearTimeout(t);
   }, [path]);
 
-  const close = () => { setOpen(false); set(KEY_UNTIL, String(Date.now() + HIDE_DAYS * 864e5)); };
+  const close = () => setOpen(false);
   useEffect(() => {
     if (!open) return;
     const esc = (e: KeyboardEvent) => e.key === "Escape" && close();
@@ -49,7 +53,7 @@ export default function ContactPopup() {
       await api("/api/contacts", { method: "POST", json: { ...f, page: path } });
       const v = { name: f.name.trim(), phone: f.phone.trim(), requirement: f.requirement.trim() };
       set(KEY_VISITOR, JSON.stringify(v)); tellChat(v);
-      setDone(true); set(KEY_UNTIL, String(Date.now() + HIDE_DAYS * 864e5));
+      setDone(true);
       setTimeout(() => setOpen(false), 2500);
     } catch (e: any) { setErr(e.message || "Could not send. Please try again."); } finally { setBusy(false); }
   };
