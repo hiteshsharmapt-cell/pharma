@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from app.core.config import settings
-from app.api.routers import (admin, admin_catalog, admin_requirements, auth, catalog, categories, companies, images, locations, products,
+from app.api.routers import (admin, admin_catalog, admin_requirements, auth, catalog, categories, companies, contacts, images, locations, products,
                              requirements, supplier, supplier_catalog)
 
 app = FastAPI(title="Pharma Marketplace API")
@@ -22,6 +22,7 @@ app.include_router(catalog.router)
 app.include_router(admin_catalog.router)
 app.include_router(supplier_catalog.router)
 app.include_router(images.router)
+app.include_router(contacts.router)
 
 @app.get("/api/health")
 def health(): return {"ok": True}

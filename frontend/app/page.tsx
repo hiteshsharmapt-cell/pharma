@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import HeroSearch from "@/components/HeroSearch";
 import CompanyCard, { type CompanyCardData } from "@/components/CompanyCard";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -37,8 +36,7 @@ export default async function Home() {
   const cities = locs.filter(l => l.type === "CITY").slice(0, 12);
 
   return (<>
-    <section className="mx-auto max-w-6xl px-4 pb-16 pt-0">
-      <div className="relative z-20 mb-12 max-w-3xl"><HeroSearch /></div>
+    <section className="mx-auto max-w-6xl px-4 pb-16 pt-10 sm:pt-14">
       <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-center lg:justify-between">
       <div className="hero-in max-w-2xl">
         <p className="inline-block rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-teal-100 backdrop-blur">India&apos;s B2B marketplace for pharma buyers and suppliers</p>

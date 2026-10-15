@@ -6,6 +6,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Scene from "@/components/Scene";
 import TawkChat from "@/components/TawkChat";
+import LogoRow from "@/components/LogoRow";
+import ContactPopup from "@/components/ContactPopup";
 
 const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
@@ -22,9 +24,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Scene />
         <AuthProvider>
           <Navbar />
+          <LogoRow />
           <main className="relative">{children}</main>
           <Footer />
           <TawkChat />
+          <ContactPopup />
         </AuthProvider>
       </body>
     </html>);

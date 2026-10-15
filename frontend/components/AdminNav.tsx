@@ -7,5 +7,6 @@ export default function AdminNav() {
       <Link href="/admin/catalog">Catalogue</Link>
       <Link href="/admin/products">Products</Link>
       <Link href="/admin/requirements">Requirements</Link>
+      <Link href="/admin/contacts">Contacts</Link>
     </div>);
 }

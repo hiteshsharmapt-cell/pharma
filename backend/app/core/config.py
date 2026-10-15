@@ -11,5 +11,7 @@ class Settings(BaseSettings):
     CLOUDINARY_CLOUD_NAME: str = ""
     CLOUDINARY_API_KEY: str = ""
     CLOUDINARY_API_SECRET: str = ""
+    # Secret you set on the Tawk.to webhook (Administration > Webhooks). Leave empty to disable the chat webhook.
+    TAWK_WEBHOOK_SECRET: str = ""
 
 settings = Settings()

@@ -129,3 +129,6 @@ class Lead(TS, Base):
 from app.models.catalog import (CompanyProductCapability, CompanySpeciality, DosageFormGroup,  # noqa: E402,F401
                                 FormulationType, ProductCategory, Speciality, VerificationStatus,
                                 capability_formulation_types, product_category_specialities)
+
+# Contact / enquiry numbers collected from the site pop-up and live chat.
+from app.models.contact import Contact  # noqa: E402,F401
