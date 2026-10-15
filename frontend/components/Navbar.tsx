@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useAuth, homeFor } from "@/lib/auth";
+import ThemeToggle from "@/components/ThemeToggle";
 import { CONTACT_PHONE, CONTACT_TEL } from "@/lib/contact";
 
 // Only this slim bar is fixed to the top of the screen. The logo and search sit below it (see LogoRow) and scroll away.
@@ -11,7 +12,7 @@ export default function Navbar() {
   const ref = useRef<HTMLElement>(null);
   const [scrolled, setScrolled] = useState(false);
   const [spacer, setSpacer] = useState(36);
-  const link = "text-white/90 hover:text-white";
+  const link = "nav-link";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -30,12 +31,13 @@ export default function Navbar() {
 
   return (<>
     <header ref={ref} className={`fixed inset-x-0 top-0 z-40 transition-colors duration-200 ${scrolled
-      ? "bg-[#06141c]/85 shadow-[0_4px_18px_rgba(0,0,0,0.35)] backdrop-blur-xl" : "bg-transparent"}`}>
+      ? "nav-solid shadow-[0_4px_18px_rgba(0,0,0,0.25)] backdrop-blur-xl" : "bg-transparent"}`}>
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-end gap-x-4 gap-y-1 px-4 py-1.5 text-sm font-medium">
-        <Link href="/post-requirement" className="rounded-full border border-white/50 px-3 py-0.5 text-white hover:bg-white/10">Post Requirement</Link>
+        <Link href="/post-requirement" className="nav-pill rounded-full border px-3 py-0.5">Post Requirement</Link>
         <a href={`tel:${CONTACT_TEL}`} className={link}>
           <span aria-hidden>📞</span> <span className="hidden sm:inline">Contact Us: </span>{CONTACT_PHONE}
         </a>
+        <ThemeToggle />
         {user ? (<>
           <Link href={homeFor(user.role)} className={link}>Dashboard</Link>
           <button onClick={logout} className={link}>Logout</button></>) : (<>

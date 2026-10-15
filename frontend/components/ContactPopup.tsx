@@ -73,6 +73,7 @@ export default function ContactPopup() {
         .cp-card form > :nth-child(1) { animation-delay: .25s } .cp-card form > :nth-child(2) { animation-delay: .32s }
         .cp-card form .space-y-3 > :nth-child(1) { animation-delay: .38s } .cp-card form .space-y-3 > :nth-child(2) { animation-delay: .45s }
         .cp-card form .space-y-3 > :nth-child(3) { animation-delay: .52s }
+        .cp-card .text-slate-500 { color: #587480 } .cp-card .text-slate-600 { color: #2a4651 }
         .cp-tick { display: inline-block; animation: cpPop .5s ease-out both; }
         .cp-out { animation: none; opacity: 0; transition: opacity .22s ease-in; }
         .cp-out .cp-card { animation: none; opacity: 0; transform: translateY(14px) scale(.97); transition: all .22s ease-in; }

@@ -120,3 +120,67 @@ select option { background: #ffffff; color: #0f2a35; }
 @media (prefers-reduced-motion: reduce) {
   .hero-in > * { animation: none; opacity: 1; }
 }
+
+/* ---------- Top bar (both themes) ---------- */
+.nav-link { color: rgba(255, 255, 255, 0.9); }
+.nav-link:hover { color: #fff; }
+.nav-pill { color: #fff; border-color: rgba(255, 255, 255, 0.5); }
+.nav-pill:hover { background: rgba(255, 255, 255, 0.12); }
+.nav-solid { background: rgba(6, 20, 28, 0.85); }
+
+/* Smooth fade while switching theme (class is added for 0.4s by ThemeToggle) */
+.theme-anim, .theme-anim * { transition: background-color .35s ease, color .35s ease, border-color .35s ease, box-shadow .35s ease !important; }
+
+/* =====================================================================
+   LIGHT THEME  —  html[data-theme="light"]
+   Same teal/violet identity: pale canvas, white cards, dark ink text.
+   Dark stays the default; everything below only applies in light mode.
+   ===================================================================== */
+html[data-theme="light"] {
+  background:
+    radial-gradient(1100px 600px at 8% -8%, rgba(45, 212, 191, 0.32), transparent 60%),
+    radial-gradient(900px 560px at 100% 4%, rgba(167, 139, 250, 0.26), transparent 58%),
+    radial-gradient(900px 600px at 50% 110%, rgba(34, 211, 238, 0.22), transparent 60%),
+    linear-gradient(165deg, #f4fbfa 0%, #e8f5f4 48%, #f1f8fb 100%);
+  background-color: #f4fbfa;
+  background-attachment: fixed;
+}
+html[data-theme="light"] body { color: #0f2a35; }
+html[data-theme="light"] ::selection { background: rgba(13, 148, 136, 0.25); }
+html[data-theme="light"] :focus-visible { outline-color: #0d9488; }
+:where(html[data-theme="light"]) * { border-color: rgba(15, 42, 53, 0.14); }   /* zero specificity: utilities like border-red-300 still win */
+
+html[data-theme="light"] .scene { opacity: 0.4; }
+
+/* Top bar */
+html[data-theme="light"] .nav-link { color: #1d4452; }
+html[data-theme="light"] .nav-link:hover { color: #0d9488; }
+html[data-theme="light"] .nav-pill { color: #0f4f57; border-color: rgba(15, 79, 87, 0.45); }
+html[data-theme="light"] .nav-pill:hover { background: rgba(13, 148, 136, 0.12); }
+html[data-theme="light"] .nav-solid { background: rgba(255, 255, 255, 0.86); box-shadow: 0 4px 18px rgba(15, 42, 53, 0.12); }
+html[data-theme="light"] .logo-badge { border: 1px solid rgba(15, 42, 53, 0.1); box-shadow: 0 6px 18px rgba(15, 42, 53, 0.14); }
+
+/* Cards: white glass with soft shadows */
+html[data-theme="light"] :is(.glass, .bg-white) {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(15, 42, 53, 0.1);
+  box-shadow: 0 8px 26px rgba(15, 42, 53, 0.1), 0 1px 3px rgba(15, 42, 53, 0.08);
+}
+html[data-theme="light"] .glass-strong {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(15, 42, 53, 0.1);
+  box-shadow: 0 12px 34px rgba(15, 42, 53, 0.14), 0 1px 4px rgba(15, 42, 53, 0.08);
+}
+html[data-theme="light"] input.bg-white, html[data-theme="light"] select.bg-white, html[data-theme="light"] textarea.bg-white { box-shadow: none; }
+html[data-theme="light"] .bg-slate-50 { background: rgba(13, 148, 136, 0.07); }
+
+/* Text that sits on the canvas becomes dark ink (buttons and gradient badges contain "bg-" so they keep white text) */
+html[data-theme="light"] .text-white:not([class*="bg-"]) { color: #0b2530; }
+html[data-theme="light"] :is(.text-slate-800, .text-slate-700, .text-slate-600, .text-slate-300, .text-slate-200, .text-slate-100) { color: #2a4651; }
+html[data-theme="light"] :is(.text-slate-500, .text-slate-400) { color: #587480; }
+html[data-theme="light"] :is(.text-brand-600, .text-teal-200, .text-teal-300) { color: #0f766e; }
+html[data-theme="light"] .text-red-600 { color: #dc2626; }
+html[data-theme="light"] .text-amber-700 { color: #b45309; }
+html[data-theme="light"] .bg-slate-200.text-slate-700 { color: #1e293b; }
+html[data-theme="light"] .headline { background-image: linear-gradient(100deg, #0b2530 0%, #0f766e 50%, #6d4ed6 100%); }
+html[data-theme="light"] .bg-brand-600, html[data-theme="light"] .bg-brand-600 * { color: #fff; }

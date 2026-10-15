@@ -19,7 +19,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Apply the saved theme before the page paints, so a light-theme visitor never sees a dark flash. */}
+        <script dangerouslySetInnerHTML={{ __html: `try{if(localStorage.getItem("yp_theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}` }} />
+      </head>
       <body suppressHydrationWarning className={`${sora.variable} ${manrope.variable} font-sans antialiased`}>
         <Scene />
         <AuthProvider>
